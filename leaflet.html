@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rahimima-Web Sederhana (UTS)</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    
+   <script src="./bundle.js"></script>
+	
+   <link rel="stylesheet" type="text/css" href="leaflet.css">
+   <script src="leaflet.js"></script>
+    </head> 
+    <body style="background-color: #eee5be;">   
+    <nav>
+    <!--PENGATURAN TAMPILAN PETA-->
+    <style>
+        #map{
+            width: 1865px;
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Web</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">Home<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu Lain</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="https://maps.app.goo.gl/QR2m311QaodxwYZd8" target="_blank">Teknik Geodesi UGM</a></li>
+              <li><a class="dropdown-item" href="https://maps.app.goo.gl/yYZb2SSoYGFXiSvv6" target="_blank">Wisdom Park</a></li>
+              <li><a class="dropdown-item" href="https://maps.app.goo.gl/Ua39w7xJf1LJirqi8" target="_blank">Balairung</a></li>
+              <li><a class="dropdown-item" href="https://maps.app.goo.gl/HjFbxY5fNmFXjcVm6" target="_blank" >Grha Sabha Pramana</a></li>
+              <li><a class="dropdown-item" href="https://maps.app.goo.gl/caJEVpEQw1XJPrQx8" target="_blank">GOR Pancasila UGM</a></li>
+              <li><a class="dropdown-item" href="https://geodesi.ugm.ac.id/" target="_blank">Website Resmi Geodesi</a></li>
+            </ul>
+        </li>
+        </ul>
+        
+        <form class="form-inline my-2 my-lg-0">
+        <button class="btn btn-outline-success my-2 my-sm-0"
+                onclick="cari()">Lokasi saya</button>
+        </form>
+        </div>
+    </nav>
+
+    <!--Kontainer Peta-->
+    <div id="map"></div>
+
+    <!--Peta-->
+
+    <script>
+        var map = L.map('map',{
+        center: [-7.766156270332025, 110.37811596251072],
+        zoom: 15
+        });
+        
+        var esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS UserCommunity'
+        }).addTo(map);
+
+        var carto = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+            subdomains: 'abcd', maxZoom: 19
+        });
+        
+        var OSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'
+        });
+
+        var geodesi     =  L.marker([-7.764056696860265, 110.37264846441755])
+            .bindPopup('<center><img src="https://lh5.googleusercontent.com/p/AF1QipOV88KWKbOLPQtohfi2O_MY1PivKyX2geQ4GD2c=w520-h240-k-no" width="150px" height="100px title="Teknik Geodesi UGM" alt="Teknik Geodesi UGM"></center><h1>Teknik Geodesi UGM</h1>')
+            .addTo(map)
+		    wisdompark  =  L.marker([-7.770349350551966, 110.38198295976669])
+            .bindPopup('<center><img src="https://lh5.googleusercontent.com/p/AF1QipPlJ8dGWWmtxe1gtzWWHRm11WoxSk5te9LclY7c=w426-h240-k-no" width="150px" height="100px title="Wisdom Park" alt="Wisdom Park"></center><h1>Wisdom Park</h1>')
+            .addTo(map),
+		    balairung   =  L.marker([-7.767650408346945, 110.37861294993412])
+            .bindPopup('<center><img src="https://lh5.googleusercontent.com/p/AF1QipPoKG2RJSM1lTZKkyaSJhBbGTNipWwMTU9BEyxu=w408-h306-k-no" width="150px" height="100px title="Balairung" alt="Balairung"></center><h1>Balairung</h1>')
+            .addTo(map),
+		    GSP         =  L.marker([-7.770152098374865, 110.37786204654094])
+            .bindPopup('<center><img src="https://lh5.googleusercontent.com/p/AF1QipMF8hp6PihHVbislW8BGqdCQmiiHaEGrfrzUIDe=w426-h240-k-no" width="150px" height="100px title="Graha Sabha Pramana (GSP)" alt="Graha Sabha Pramana (GSP)"></center><h1>Graha Sabha Pramana (GSP)</h1>')
+            .addTo(map);
+            pancas      =  L.marker([-7.769475916079286, 110.38373542149472])
+            .bindPopup('<center><img src="https://lh5.googleusercontent.com/p/AF1QipOU5kGKG2ynCpM15oSHmVdHvM1bp9qTcdNy-cpb=w408-h306-k-no" width="150px" height="100px title="GOR Pancasila UGM" alt="GOR Pancasila UGM"></center><h1>GOR Pancasila UGM</h1>')
+            .addTo(map);
+
+	    var jogja = L.layerGroup([geodesi, wisdompark, balairung, GSP, pancas]);
+        
+        var baseMaps = {
+            "Citra Satelit": esri,
+            "Peta Carto": carto,
+            "OSM": OSM,
+        };
+        
+        var overlayMaps = {"Tempat Favorit di UGM": jogja};
+
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        L.Control.geocoder().addTo(map);
+	
+	    L.easyPrint({
+		    title: 'My awesome print button',
+		    position: 'topright',
+		    sizeModes: ['A4Portrait', 'A4Landscape']
+	    }).addTo(map);
+	
+	    var graphicScale = L.control.graphicScale({
+		    fill: "fill",
+		    doubleLine: "true",
+		    showSubunits: "true"
+	    }).addTo(map);
+        
+
+        function cari(){
+		    alert('izinkan mengakses lokasi?');
+		    map.locate({setView: true, maxZoom: 16});
+		
+		    function onLocationFound(e) {
+			    var radius = e.accuracy / 2;
+
+			L.marker(e.latlng).addTo(map)
+				.bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+			L.circle(e.latlng, radius).addTo(map);
+		}
+		map.on('locationfound', onLocationFound);
+	    }
+
+        var popup = L.popup();
+        function onMapClick(e) {
+            popup
+                .setLatLng(e.latlng)
+                .setContent("Koordinat" + e.latlng.toString())
+                .openOn(map);
+        }
+        map.on('click', onMapClick);
+
+        L.geoJSON(jogjageojson,{
+            style: function(feature) {
+                switch (feature.properties.KABUPATEN) {
+                    case 'Gunung Kidul': return {color: "#ff9900"};
+                    case 'Sleman': return {color: "red"};
+                    case 'Bantul': return {color: "blue"};
+                    case 'Yogyakarta': return {color: "green"};
+                    case 'Kulon Progo': return {color: "magenta"};
+                }
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(
+                'Kecamatan adalah ' +
+                '<strong>' +
+                feature.properties.KECAMATAN +
+                '</strong>'
+                );
+            }
+        }).addTo(map);
+
+        L.control.scale().addTo(map);
+        </script>
+        
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous">
+</script>
+
+<br><br>
+<hr>
+<!--Esai gagasan berbasis WebGIS-->
+<center><h1 id="esai">Essai mengenai materi SIG WEB</h1></center>
+<div id="esaiteks" width="300px" height="1000px">
+<p style="text-align: justify;">
+    Sistem Informasi Geografis (SIG) adalah sistem berbasis komputer yang digunakan untuk memanipulasi, menganalisis, menyimpan, dan menganalisis informasi geografis. 
+    SIG berbasis web adalah SIG yang diakses melalui internet dan dapat diakses dari berbagai perangkat seperti komputer, tablet, atau smartphone. 
+    SIG berbasis web terdiri dari beberapa komponen seperti data spasial, data atribut, perangkat keras, perangkat lunak, dan pengguna. SIG berbasis web dapat 
+    digunakan untuk melakukan berbagai analisis seperti analisis klasifikasi, analisis overlay, analisis networking, analisis buffering, dan analisis lainnya. 
+    Penggunaan SIG berbasis web memiliki beberapa keuntungan seperti pengumpulan data yang hemat tempat, mudah dalam pengolahan data, dan dapat diakses dari berbagai perangkat. 
+    SIG berbasis web sangat berguna dalam berbagai bidang seperti pariwisata, industri, dan lainnya.   
+</p>
+<br>
+</div> 
+<!--Tugas M1 (1)-->
+<div id="M1">
+	<h1>Berisi link mengarah ke alamat Website Resmi Geodesi, Tulisan miring, Tulisan Tebal, Tulisan Berwarna, dan Tabel</h1> <!--merupakan first heading pada sebuah teks-->
+	</div>
+	<a href="https://geodesi.ugm.ac.id/" target="_blank">Link ini mengarah ke Website Teknik Geodesi</a> <!--membuat hyperlink berdasarkan link eksternal-->
+	<br><br> <!--breakline-->
+	<i>Tulisan ini miring </i> <!--membuat tulisan jadi miring--> <b>dan yang ini tebal.</b> <!--membuat tulisan jadi tebal-->
+
+	<p style="color:red">Sedangkan, tulisan ini berwarna merah.</p> <!--menggunakan inline style untuk mengubah teks paragraf menjadi warna merah--> <!---->
+    <p style="color:rgb(55, 0, 255)">Selain itu, tulisan ini berwarna biru.</p> <!--menggunakan inline style untuk mengubah teks paragraf menjadi warna merah--> <!---->
+	<hr style="margin-left: 0%;" width="535px"> 
+	<!--script membuat garis horizontal dengan mengatur antara jarak garis horizontal dansisi kiri html sebesar 0% dan panjang garis sebesar 535px-->
+    <style>
+        table, th, td {
+          border:1px solid black;
+        }
+        </style>
+    <table style="width:40%">
+        <tr>
+          <th>Nama</th>
+          <th>NIM</th>
+        </tr>
+        <tr>
+          <td>Rahimima Dyah Nur Aisyah</td>
+          <td>20/463329/TK/51321</td>
+        </tr>
+      </table>
+
+    <!--membuat form-->
+<center><h1 id="M3">Formulir (validasi pekerjaan)</h1></center>
+<p>Masukkan nama, password, dan alamat email anda : </p>
+Nama     : <input type="text" id="namaanda" style="margin-left: 34px; margin-bottom: 10px;"> <br>
+E-mail: <input type="email" id="email" style="margin-left: 32px; margin-bottom: 10px"> <br>
+Password : <input type="password" id="pass" style="margin-left: 10px; margin-bottom: 10px"> <br>
+
+<button onclick="tekan()">Klik!</button>
+
+<script>
+    function tekan(){
+        var pw, check, text;
+        var check = "Selesai";
+        pw = document.getElementById("pass").value;
+
+        if (pw === check) {
+            text = "Password benar!";
+            alert(text);
+        }
+
+        else{
+            text = "error";
+            alert(text);
+        }
+    }
+</script>
+<hr>
+<br><br>
+<hr>
+
+</script>
+</body>
+</html>
